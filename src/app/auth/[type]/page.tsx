@@ -9,7 +9,7 @@ interface AuthPageProps {
   };
 }
 
-export default function AuthPage({ params }: AuthPageProps) {
+export default async function AuthPage({ params }: AuthPageProps) {
   const { type } = params;
 
   if (type !== "login" && type !== "register") {
@@ -24,7 +24,9 @@ export default function AuthPage({ params }: AuthPageProps) {
             title={isLogin ? "Login User" : "Register User"}
             subTitle={isLogin ? "Sign in to your account" : "Create your account to get started"}
             form={isLogin ? <LoginForm /> : <RegisterForm />}
-            titleButton={isLogin ? "Entrar" : "Cadastrar"}
+            titleButton={isLogin ? "Login" : "Register"}
+            forgotPassword={isLogin ? "Forgot my password" : ""}
+            linkRouter={isLogin ? "register" : "login"}
         />
     </div>
   );
