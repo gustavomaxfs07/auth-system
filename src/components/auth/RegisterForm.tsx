@@ -2,6 +2,16 @@
 import { Icons, Input } from "../ui/Input";
 import React, { useState } from "react";
 import { Button } from "../ui/Button";
+import { authClient } from "@/lib/auth-client";
+import { on } from "events";
+import { router } from "better-auth/api";
+import { useRouter } from "next/navigation";
+
+type UserCredentials = {
+  fullName: string;
+  email: string;
+  password: string;
+};
 
 export function RegisterForm() {
 
@@ -9,18 +19,38 @@ export function RegisterForm() {
   const [inputEmail, setInputEmail] = useState<string>("");
   const [inputPassword, setInputPassword] = useState<string>("");
 
-  const userCredentials = {
+  const router = useRouter();
+
+  const userCredentials: UserCredentials = {
     fullName: inputName,
     email: inputEmail,
     password: inputPassword
   };
 
-  function getInputValue(){
-    console.log(userCredentials);
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+
+    event.preventDefault();
+
+    const {data, error} = await authClient.signUp.email({
+      name: inputName,
+      email: inputEmail,
+      password: inputPassword,
+    }, {
+      onSuccess: (ctx) => {
+        console.log("User registered successfully");
+        router.replace("/dashboard");
+      },
+      onError: (error) => {
+        console.log("Error registering user:" + error);
+      },
+      onRequest: (ctx) => {
+        console.log("Registration request initiated");
+      }
+    });
   }
   
   return (
-    <form action="">
+    <form onSubmit={onSubmit}>
       <Input
         icon={Icons.User}
         type="text"
@@ -48,7 +78,7 @@ export function RegisterForm() {
         required
       />
 
-      <Button disabled={!(inputName && inputEmail && inputPassword)} onClick={getInputValue} children={"Register"} size={""} type={"button"}/>
+      <Button disabled={!(inputName && inputEmail && inputPassword)} children={"Register"} size={""} type={"submit"}/>
     </form>
   );
 }
