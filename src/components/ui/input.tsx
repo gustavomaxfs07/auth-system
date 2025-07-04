@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 
 type InputType = 'text' | 'email' | 'password' | 'tel' | 'url' | 'search' | 'number';
 
@@ -7,15 +7,70 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, '
   placeholder: string;
   type?: InputType;
   className?: string;
+  required?: boolean;
+  errorMessage?: string;
+  onValidationChange?: (isValid: boolean) => void;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ icon, placeholder, type = 'text', className = '', ...props }, ref) => {
+  ({ 
+    icon, 
+    placeholder, 
+    type = 'text', 
+    className = '', 
+    required = false,
+    errorMessage = 'Este campo é obrigatório',
+    onValidationChange,
+    onBlur,
+    onChange,
+    ...props 
+  }, ref) => {
+    const [hasError, setHasError] = useState(false);
+    const [value, setValue] = useState('');
+    const [touched, setTouched] = useState(false);
+
+    const validateField = (currentValue: string) => {
+      const isEmpty = currentValue.trim() === '';
+      const isInvalid = required && isEmpty && touched;
+      
+      setHasError(isInvalid);
+      
+      if (onValidationChange) {
+        onValidationChange(!isInvalid);
+      }
+      
+      return !isInvalid;
+    };
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+      setTouched(true);
+      validateField(e.target.value);
+      
+      if (onBlur) {
+        onBlur(e);
+      }
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
+      setValue(newValue);
+      
+      // Se o campo já foi tocado, valida em tempo real
+      if (touched) {
+        validateField(newValue);
+      }
+      
+      if (onChange) {
+        onChange(e);
+      }
+    };
+
     return (
-      <div className="relative mb-4">
-        
+      <div className="relative mb-7">
         <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-          <div className="h-5 w-5 text-gray-400 flex items-center justify-center">
+          <div className={`h-5 w-5 flex items-center justify-center transition-colors duration-200 ${
+            hasError ? 'text-red-500' : 'text-gray-400'
+          }`}>
             {icon}
           </div>
         </div>
@@ -24,9 +79,25 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           type={type}
           placeholder={placeholder}
-          className={`w-full pl-14 pr-6 py-4 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-full focus:border-gray-300 focus:ring-2 focus:ring-gray-100 transition-all duration-200 focus:outline-none ${className}`}
+          value={value}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          className={`w-full pl-14 pr-6 py-4 text-gray-700 placeholder-gray-400 bg-white border rounded-full focus:ring-2 transition-all duration-200 focus:outline-none ${
+            hasError 
+              ? 'border-red-300 focus:border-red-400 focus:ring-red-100' 
+              : 'border-gray-200 focus:border-gray-300 focus:ring-gray-100'
+          } ${className}`}
           {...props}
         />
+        
+        {hasError && (
+          <div className="absolute left-6 mt-1 text-sm text-red-500 flex items-center">
+            <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            {errorMessage}
+          </div>
+        )}
       </div>
     );
   }
@@ -34,7 +105,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
 Input.displayName = 'Input';
 
-// Ícones SVG reutilizáveis
 export const Icons = {
   Email: (
     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-full h-full">
@@ -92,64 +162,151 @@ export const Icons = {
   ),
 };
 
-// Exemplos de uso do componente
 export const InputExamples = () => {
+  const [formValid, setFormValid] = useState({
+    email: false,
+    password: false,
+    name: false,
+    phone: false
+  });
+
+  const handleValidationChange = (field: string) => (isValid: boolean) => {
+    setFormValid(prev => ({ ...prev, [field]: isValid }));
+  };
+
+  const handleSubmit = () => {
+    const allValid = Object.values(formValid).every(valid => valid);
+    
+    if (allValid) {
+      alert('Formulário válido! ✅');
+    } else {
+      alert('Por favor, preencha todos os campos obrigatórios! ❌');
+    }
+  };
+
   return (
     <div className="space-y-6 p-6 max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Componente Input Reutilizável</h2>
+      <h2 className="text-2xl font-bold mb-6">Componente Input com Validação</h2>
       
-      {/* Input de Email */}
-      <Input
-        icon={Icons.Email}
-        type="email"
-        placeholder="Digite seu email"
-      />
+      <div className="space-y-6">
+        {/* Input de Email - OBRIGATÓRIO */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Email *
+          </label>
+          <Input
+            icon={Icons.Email}
+            type="email"
+            placeholder="Digite seu email"
+            required={true}
+            errorMessage="Email é obrigatório"
+            onValidationChange={handleValidationChange('email')}
+          />
+        </div>
+        
+        {/* Input de Senha - OBRIGATÓRIO */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Senha *
+          </label>
+          <Input
+            icon={Icons.Password}
+            type="password"
+            placeholder="Digite sua senha"
+            required={true}
+            errorMessage="Senha é obrigatória"
+            onValidationChange={handleValidationChange('password')}
+          />
+        </div>
+        
+        {/* Input de Nome - OBRIGATÓRIO */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Nome Completo *
+          </label>
+          <Input
+            icon={Icons.User}
+            type="text"
+            placeholder="Digite seu nome completo"
+            required={true}
+            errorMessage="Nome é obrigatório"
+            onValidationChange={handleValidationChange('name')}
+          />
+        </div>
+        
+        {/* Input de Telefone - OBRIGATÓRIO com mensagem customizada */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Telefone *
+          </label>
+          <Input
+            icon={Icons.Phone}
+            type="tel"
+            placeholder="Digite seu telefone"
+            required={true}
+            errorMessage="Por favor, informe seu número de telefone"
+            onValidationChange={handleValidationChange('phone')}
+          />
+        </div>
+        
+        {/* Input de Busca - OPCIONAL */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Buscar (opcional)
+          </label>
+          <Input
+            icon={Icons.Search}
+            type="search"
+            placeholder="Buscar..."
+            required={false}
+          />
+        </div>
+        
+        {/* Input customizado - OPCIONAL */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Email secundário (opcional)
+          </label>
+          <Input
+            icon={Icons.Email}
+            type="email"
+            placeholder="Email secundário"
+            className="border-blue-200 focus:border-blue-400 focus:ring-blue-100"
+            required={false}
+          />
+        </div>
+
+        {/* Botão de Submit */}
+        <button
+          onClick={handleSubmit}
+          className="w-full bg-blue-600 text-white py-4 px-6 rounded-full font-medium hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Enviar Formulário
+        </button>
+      </div>
       
-      {/* Input de Senha */}
-      <Input
-        icon={Icons.Password}
-        type="password"
-        placeholder="Digite sua senha"
-      />
-      
-      {/* Input de Nome */}
-      <Input
-        icon={Icons.User}
-        type="text"
-        placeholder="Digite seu nome completo"
-      />
-      
-      {/* Input de Telefone */}
-      <Input
-        icon={Icons.Phone}
-        type="tel"
-        placeholder="Digite seu telefone"
-      />
-      
-      {/* Input de Busca */}
-      <Input
-        icon={Icons.Search}
-        type="search"
-        placeholder="Buscar..."
-      />
-      
-      {/* Input customizado com classes adicionais */}
-      <Input
-        icon={Icons.Email}
-        type="email"
-        placeholder="Email com estilo customizado"
-        className="border-blue-200 focus:border-blue-400 focus:ring-blue-100"
-      />
-      
-      {/* Exemplo com eventos */}
-      <Input
-        icon={Icons.User}
-        type="text"
-        placeholder="Digite algo..."
-        onChange={(e) => console.log('Valor:', e.target.value)}
-        onFocus={() => console.log('Input focado')}
-        onBlur={() => console.log('Input desfocado')}
-      />
+      {/* Status de validação */}
+      <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+        <h3 className="font-medium text-gray-700 mb-2">Status da Validação:</h3>
+        <div className="space-y-1 text-sm">
+          <div className={`flex items-center ${formValid.email ? 'text-green-600' : 'text-red-600'}`}>
+            <span className="w-2 h-2 rounded-full bg-current mr-2"></span>
+            Email: {formValid.email ? 'Válido' : 'Inválido'}
+          </div>
+          <div className={`flex items-center ${formValid.password ? 'text-green-600' : 'text-red-600'}`}>
+            <span className="w-2 h-2 rounded-full bg-current mr-2"></span>
+            Senha: {formValid.password ? 'Válido' : 'Inválido'}
+          </div>
+          <div className={`flex items-center ${formValid.name ? 'text-green-600' : 'text-red-600'}`}>
+            <span className="w-2 h-2 rounded-full bg-current mr-2"></span>
+            Nome: {formValid.name ? 'Válido' : 'Inválido'}
+          </div>
+          <div className={`flex items-center ${formValid.phone ? 'text-green-600' : 'text-red-600'}`}>
+            <span className="w-2 h-2 rounded-full bg-current mr-2"></span>
+            Telefone: {formValid.phone ? 'Válido' : 'Inválido'}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
