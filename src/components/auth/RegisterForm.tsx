@@ -48,7 +48,7 @@ export function RegisterForm() {
         required
       />
 
-      <Button onClick={getInputValue} children={"Register"} size={""} type={""}/>
+      <Button disabled={!(inputName && inputEmail && inputPassword)} onClick={getInputValue} children={"Register"} size={""} type={"button"}/>
     </form>
   );
 }

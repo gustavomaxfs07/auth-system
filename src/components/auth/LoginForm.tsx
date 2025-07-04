@@ -18,7 +18,7 @@ export function LoginForm() {
   }
 
   return (
-    <form action="">
+    <form onSubmit={getInputValue}>
         <Input
           icon={Icons.Email}
           type="email"
@@ -37,7 +37,7 @@ export function LoginForm() {
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputPassword(e.target.value)}
         />
 
-        <Button onClick={getInputValue} children={"Login"} size={""} type={""}/>
+      <Button disabled={!(inputEmail && inputPassword)} children={"Login"} size={""} type={"submit"}/>
     </form>
   );
 }

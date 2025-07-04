@@ -4,9 +4,9 @@ import { notFound } from "next/navigation";
 import { CardForm } from "@/components/ui/CardForm";
 
 interface AuthPageProps {
-  params: Promise<{
+  params: {
     type: string;
-  }>;
+  };
 }
 
 export default async function AuthPage(props: AuthPageProps) {
