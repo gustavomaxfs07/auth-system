@@ -2,7 +2,7 @@
 
 import { Icons, Input } from "@/components/ui/Input-component";
 import React, { useState } from "react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button-component";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
