@@ -1,10 +1,9 @@
 'use client';
+
 import { Icons, Input } from "@/components/ui/input";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { authClient } from "@/lib/auth-client";
-import { on } from "events";
-import { router } from "better-auth/api";
 import { useRouter } from "next/navigation";
 
 type UserCredentials = {

@@ -4,7 +4,7 @@ import { Icons, Input } from "@/components/ui/input";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { authClient } from "@/lib/auth-client";
-import router, { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export function LoginForm() {
   const [inputEmail, setInputEmail] = useState<string>("");
