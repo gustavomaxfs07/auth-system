@@ -1,8 +1,8 @@
 'use client';
 
-import { Icons, Input } from "../ui/Input";
+import { Icons, Input } from "@/components/ui/input";
 import React, { useState } from "react";
-import { Button } from "../ui/Button";
+import { Button } from "@/components/ui/Button";
 import { authClient } from "@/lib/auth-client";
 import router, { useRouter } from "next/navigation";
 
