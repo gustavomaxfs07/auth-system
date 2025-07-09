@@ -9,8 +9,8 @@ interface AuthPageProps {
   };
 }
 
-export default async function AuthPage(props: AuthPageProps) {
-  const params = await props.params;
+export default function AuthPage(props: AuthPageProps) {
+  const params = props.params;
   const { type } = params;
 
   if (type !== "login" && type !== "register") {
