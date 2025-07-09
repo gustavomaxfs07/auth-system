@@ -18,15 +18,8 @@ export function RegisterForm() {
   const [inputName, setInputName] = useState<string>("");
   const [inputEmail, setInputEmail] = useState<string>("");
   const [inputPassword, setInputPassword] = useState<string>("");
-
   const router = useRouter();
-
-  const userCredentials: UserCredentials = {
-    fullName: inputName,
-    email: inputEmail,
-    password: inputPassword
-  };
-
+  
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
 
     event.preventDefault();
@@ -37,8 +30,10 @@ export function RegisterForm() {
       password: inputPassword,
     }, {
       onSuccess: (ctx) => {
-        console.log("User registered successfully");
+        console.log(ctx);
+        document.cookie = `token=${ctx.data.token}; path=/; max-age=${60 * 60 * 24 * 7}; secure; samesite=strict`;
         router.replace("/dashboard");
+
       },
       onError: (error) => {
         console.log("Error registering user:" + error);

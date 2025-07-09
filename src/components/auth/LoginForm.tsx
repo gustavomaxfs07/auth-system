@@ -3,22 +3,39 @@
 import { Icons, Input } from "../ui/Input";
 import React, { useState } from "react";
 import { Button } from "../ui/Button";
+import { authClient } from "@/lib/auth-client";
+import router, { useRouter } from "next/navigation";
 
 export function LoginForm() {
   const [inputEmail, setInputEmail] = useState<string>("");
   const [inputPassword, setInputPassword] = useState<string>("");
+  const router = useRouter();
 
-  const userCredentials = {
-    email: inputEmail,
-    password: inputPassword
-  };
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+      event.preventDefault();
 
-  function getInputValue(){
-    console.log(userCredentials);
-  }
+      const {data, error} = await authClient.signIn.email({
+        email: inputEmail,
+        password: inputPassword,
+        callbackURL: "/dashboard"
+      }, {
+        onSuccess: (ctx) => {
+          console.log(ctx);
+          document.cookie = `token=${ctx.data.token}; path=/; max-age=${60 * 60 * 24 * 7}; secure; samesite=strict`;
+          router.replace("/dashboard");
+  
+        },
+        onError: (error) => {
+          console.log("Error registering user:" + error);
+        },
+        onRequest: (ctx) => {
+          console.log("Registration request initiated");
+        }
+      });
+   }
 
   return (
-    <form onSubmit={getInputValue}>
+    <form onSubmit={onSubmit}>
         <Input
           icon={Icons.Email}
           type="email"
