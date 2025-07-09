@@ -1,16 +1,19 @@
+"use client";
+
 import { RegisterForm } from "@/components/auth/RegisterForm";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { notFound } from "next/navigation";
 import { CardForm } from "@/components/ui/CardForm";
+import { use } from "react";
 
 interface AuthPageProps {
-  params: {
+  params: Promise<{
     type: string;
-  };
+  }>;
 }
 
 export default function AuthPage(props: AuthPageProps) {
-  const params = props.params;
+  const params = use(props.params);
   const { type } = params;
 
   if (type !== "login" && type !== "register") {
@@ -21,13 +24,13 @@ export default function AuthPage(props: AuthPageProps) {
 
   return (
     <div className="w-full mx-auto justify-center flex">
-        <CardForm
-            title={isLogin ? "Login User" : "Register User"}
-            subTitle={isLogin ? "Sign in to your account" : "Create your account to get started"}
-            form={isLogin ? <LoginForm /> : <RegisterForm />}
-            forgotPassword={isLogin ? "Forgot my password" : ""}
-            linkRouter={isLogin ? "register" : "login"}
-        />
+      <CardForm
+        title={isLogin ? "Login User" : "Register User"}
+        subTitle={isLogin ? "Sign in to your account" : "Create your account to get started"}
+        form={isLogin ? <LoginForm /> : <RegisterForm />}
+        forgotPassword={isLogin ? "Forgot my password" : ""}
+        linkRouter={isLogin ? "register" : "login"}
+      />
     </div>
   );
 }
