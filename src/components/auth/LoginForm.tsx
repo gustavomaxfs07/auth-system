@@ -14,7 +14,7 @@ export function LoginForm() {
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
       event.preventDefault();
 
-      const {data, error} = await authClient.signIn.email({
+      const {} = await authClient.signIn.email({
         email: inputEmail,
         password: inputPassword,
         callbackURL: "/dashboard"
@@ -23,13 +23,12 @@ export function LoginForm() {
           console.log(ctx);
           document.cookie = `token=${ctx.data.token}; path=/; max-age=${60 * 60 * 24 * 7}; secure; samesite=strict`;
           router.replace("/dashboard");
-  
         },
         onError: (error) => {
-          console.log("Error registering user:" + error);
+          console.log("Error logging in user:" + error);
         },
         onRequest: (ctx) => {
-          console.log("Registration request initiated");
+          console.log("Login request initiated: " + ctx);
         }
       });
    }
