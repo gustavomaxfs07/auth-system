@@ -1,9 +1,10 @@
 'use client';
 
-import { Icons, Input } from "@/components/ui/Input-component";
-import React, { useState } from "react";
-import { Button } from "@/components/ui/Button-component";
+import { Icons, Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 import { authClient } from "@/lib/auth-client";
+
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export function LoginForm() {
@@ -12,11 +13,11 @@ export function LoginForm() {
   const router = useRouter();
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-      event.preventDefault();
+  event.preventDefault();
 
-      const {} = await authClient.signIn.email({
-        email: inputEmail,
-        password: inputPassword,
+    const { data, error } = await authClient.signIn.email({
+      email: inputEmail,
+      password: inputPassword,
         callbackURL: "/dashboard"
       }, {
         onSuccess: (ctx) => {
