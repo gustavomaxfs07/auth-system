@@ -1,17 +1,11 @@
 'use client';
-import { Icons, Input } from "../ui/Input";
-import React, { useState } from "react";
-import { Button } from "../ui/Button";
-import { authClient } from "@/lib/auth-client";
-import { on } from "events";
-import { router } from "better-auth/api";
-import { useRouter } from "next/navigation";
 
-type UserCredentials = {
-  fullName: string;
-  email: string;
-  password: string;
-};
+import { Icons, Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { authClient } from "@/lib/auth-client";
+
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export function RegisterForm() {
 
@@ -21,10 +15,9 @@ export function RegisterForm() {
   const router = useRouter();
   
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  event.preventDefault();
 
-    event.preventDefault();
-
-    const {data, error} = await authClient.signUp.email({
+    const { data, error } = await authClient.signUp.email({
       name: inputName,
       email: inputEmail,
       password: inputPassword,
@@ -33,13 +26,14 @@ export function RegisterForm() {
         console.log(ctx);
         document.cookie = `token=${ctx.data.token}; path=/; max-age=${60 * 60 * 24 * 7}; secure; samesite=strict`;
         router.replace("/dashboard");
-
       },
+      
       onError: (error) => {
         console.log("Error registering user:" + error);
       },
+
       onRequest: (ctx) => {
-        console.log("Registration request initiated");
+        console.log("Registration request initiated" + ctx);
       }
     });
   }
