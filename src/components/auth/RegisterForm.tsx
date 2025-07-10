@@ -17,7 +17,7 @@ export function RegisterForm() {
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
   event.preventDefault();
 
-    const { data, error } = await authClient.signUp.email({
+    const {} = await authClient.signUp.email({
       name: inputName,
       email: inputEmail,
       password: inputPassword,

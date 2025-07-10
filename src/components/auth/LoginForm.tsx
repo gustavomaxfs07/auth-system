@@ -15,7 +15,7 @@ export function LoginForm() {
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
   event.preventDefault();
 
-    const { data, error } = await authClient.signIn.email({
+    const {} = await authClient.signIn.email({
       email: inputEmail,
       password: inputPassword,
         callbackURL: "/dashboard"
