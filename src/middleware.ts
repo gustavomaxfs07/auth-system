@@ -1,4 +1,3 @@
-import { Middleware } from "next/dist/lib/load-custom-routes"
 import { MiddlewareConfig, NextRequest, NextResponse } from "next/server"
 
 const publicRoutes = ['/auth/login', '/auth/register'];
