@@ -3,6 +3,7 @@
 interface Props {
     children: string;
     size: string;
+    className: string;
     type: "button" | "submit" | "reset";
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
     disabled?: boolean;
