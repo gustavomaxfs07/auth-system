@@ -19,20 +19,20 @@ export function HeaderComponent() {
               className="mr-3 h-6 sm:h-9"
               alt="Flowbite Logo"
             />
-            <span className="self-center text-xl font-semibold whitespace-nowrap text-blue-500">
+            <span className="hidden sm:block self-center text-xl font-semibold whitespace-nowrap text-blue-500">
               Flowbite
             </span>
           </Link>
 
           <div className="flex items-center lg:order-2">
             <Link href={`/auth/login`}
-              className="text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-1.5 lg:px-5 lg:py-2.5 mr-2 focus:outline-none transition-colors duration-200">
+              className="text-white bg-blue-500 border-blue-500 hover:bg-blue-400 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-1.5 lg:px-5 lg:py-2.5 mr-2 focus:outline-none transition-colors duration-200">
               Log in
             </Link>
 
             <Link href={`/auth/register`}
-              className="hidden sm:block text-blue-500 border-blue-500 border-2 hover:bg-blue-500 hover:text-white focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none transition-colors duration-200">
-              Get started
+              className="text-blue-500 border-blue-500 border-2 hover:bg-blue-500 hover:text-white focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none transition-colors duration-200">
+              Register
             </Link>
 
             <Link href={`/auth/login`}
