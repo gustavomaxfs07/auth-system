@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <main className="h-[calc(100vh-116px)] flex items-center justify-center bg-zinc-50">
+    <main className="h-[calc(100vh-64px)] flex items-center justify-center bg-zinc-50">
         <section className="w-1/2 items-center justify-center p-4 md:flex hidden">
             <div>
                 <Image

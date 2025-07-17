@@ -1,13 +1,23 @@
 'use client';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Button } from './Button';
 
-export function HeaderComponent() {
+interface HeaderComponentProps {
+  session: any;
+}
+
+export function HeaderComponent({ session }: HeaderComponentProps) {
   const [menuShow, setMenuShow] = useState(false);
+  const [showAuthButtons, setShowAuthButtons] = useState(true);
 
   function toggleMenu() {
     setMenuShow(prev => !prev);
   }
+
+  useEffect(() => {
+    setShowAuthButtons(!session);
+  }, [session]);
 
   return (
     <header className="bg-white border-b border-gray-200 px-4 lg:px-6 py-2.5">
@@ -20,23 +30,25 @@ export function HeaderComponent() {
               alt="Flowbite Logo"
             />
             <span className="hidden sm:block self-center text-xl font-semibold whitespace-nowrap text-blue-500">
-              Flowbite
+              Auth System
             </span>
           </Link>
 
           <div className="flex items-center lg:order-2">
-            <Link href={`/auth/login`}
-              className="text-white bg-blue-500 border-blue-500 hover:bg-blue-400 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-1.5 lg:px-5 lg:py-2.5 mr-2 focus:outline-none transition-colors duration-200">
-              Log in
-            </Link>
+            <div className={`${showAuthButtons ? 'flex' : 'hidden'}`}>
+              <Link href={`/auth/login`}
+                className={`text-white bg-blue-500 border-blue-500 hover:bg-blue-400 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-1.5 lg:px-5 lg:py-2.5 mr-2 focus:outline-none transition-colors duration-200`}>
+                Log in
+              </Link>
 
-            <Link href={`/auth/register`}
-              className="text-blue-500 border-blue-500 border-2 hover:bg-blue-500 hover:text-white focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none transition-colors duration-200">
-              Register
-            </Link>
+              <Link href={`/auth/register`}
+                className={`text-blue-500 border-blue-500 border-2 hover:bg-blue-500 hover:text-white focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none transition-colors duration-200`}>
+                Register
+              </Link>
+            </div>
 
-            <Link href={`/auth/login`}
-              className="hidden text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-1.5 lg:px-5 lg:py-2.5 mr-2 focus:outline-none transition-colors duration-200">
+            <Link href={`/auth/logout`}
+              className={`${session ? 'block' : 'hidden'} text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-2 py-1.5 lg:px-5 lg:py-2.5 mr-2 focus:outline-none transition-colors duration-200`}>
               Logout
             </Link>
 
@@ -44,7 +56,7 @@ export function HeaderComponent() {
               onClick={toggleMenu}
               type="button"
               className="inline-flex items-center p-2 ml-1 text-sm text-blue-500 rounded-lg lg:hidden hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-colors duration-200"
-              aria-controls="mobile-menu-2"
+              aria-controls="btn-menu"
               aria-expanded={menuShow}
             >
               <span className="sr-only">Open main menu</span>
@@ -64,52 +76,17 @@ export function HeaderComponent() {
           </div>
 
           <div
-            className={`${
-              menuShow ? 'flex' : 'hidden'
-            } absolute top-full left-0 right-0 z-50 w-full bg-white shadow-lg border-t border-gray-200 flex-col lg:static lg:flex lg:w-auto lg:order-1 lg:bg-transparent lg:shadow-none lg:border-0`}
-            id="mobile-menu-2"
+            className={`${menuShow ? 'flex' : 'hidden'} absolute top-full left-0 right-0 z-50 w-full bg-white shadow-lg border-t border-gray-200 flex-col lg:static lg:flex lg:w-auto lg:order-1 lg:bg-transparent lg:shadow-none lg:border-0`}
+            id="btn-menu"
           >
             <ul className="flex flex-col py-4 px-4 font-medium lg:flex-row lg:space-x-8 lg:p-0">
               <li>
-                <a
-                  href="#"
+                <Link href={"/dashboard"}
                   className="block py-3 px-2 text-blue-500 font-medium rounded-lg lg:bg-transparent lg:p-0 hover:bg-blue-50 lg:hover:bg-transparent lg:hover:text-blue-600 transition-colors duration-200"
                   aria-current="page"
                 >
                   Home
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block py-3 px-2 text-gray-700 rounded-lg hover:bg-gray-50 lg:hover:bg-transparent lg:hover:text-blue-600 lg:p-0 transition-colors duration-200"
-                >
-                  Company
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block py-3 px-2 text-gray-700 rounded-lg hover:bg-gray-50 lg:hover:bg-transparent lg:hover:text-blue-600 lg:p-0 transition-colors duration-200"
-                >
-                  Marketplace
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block py-3 px-2 text-gray-700 rounded-lg hover:bg-gray-50 lg:hover:bg-transparent lg:hover:text-blue-600 lg:p-0 transition-colors duration-200"
-                >
-                  Features
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block py-3 px-2 text-gray-700 rounded-lg hover:bg-gray-50 lg:hover:bg-transparent lg:hover:text-blue-600 lg:p-0 transition-colors duration-200"
-                >
-                  Team
-                </a>
+                </Link>
               </li>
               <li>
                 <a
